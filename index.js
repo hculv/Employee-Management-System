@@ -1,4 +1,4 @@
-var mysql = require("mysql");
+var mysql = require('mysql');
 var inq = require("inquirer");
 var add = require("./lib/add");
 var update = require("./lib/update");
@@ -6,7 +6,7 @@ var view = require("./lib/view");
 
 var connection = mysql.createConnection({
   host: "localhost",
-  port: 3301,
+  port: 8000,
   user: "root",
   password: "wook1997",
   database: "management_db"
