@@ -1,6 +1,5 @@
 var mysql = require("mysql");
 var inq = require("inquirer");
-var table = require("console.table");
 var add = require("./lib/add");
 var update = require("./lib/update");
 var view = require("./lib/view");
@@ -23,12 +22,12 @@ exports.start = () => {
     inq.prompt([
         {
             type: "list",
-            message: "What would you like to do?",
+            message: "Choose one of the following:",
             name: "choice",
             choices: [
                 "View All Employees",
                 "Add Employee",
-                "Update Employee Role",
+                "Update Employee Info",
                 "EXIT"                
             ]
         }
@@ -40,7 +39,7 @@ exports.start = () => {
       else if(answer.choice === "Add Employee") {
         add.addEmployee();
       }      
-      else if(answer.choice === "Update Employee Role") {
+      else if(answer.choice === "Update Employee Info") {
         update.updateRole();
       }
       else if(answer.choice === "EXIT") {
