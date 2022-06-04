@@ -1,4 +1,4 @@
-INSERT INTO department (dept_name) VALUES ('manager'), ('designer'), ('developer');
+INSERT INTO department (dept_name) VALUES ('manager'), ('employee'), ('intern');
 INSERT INTO employee_role (title, salary, dept_id) VALUES
 ('Manager', 90000.00, 3), 
 ('Developer', 70000.00, 1),
@@ -8,6 +8,6 @@ INSERT INTO employee_role (title, salary, dept_id) VALUES
 ('Intern', 10000.00, 2);
 
 INSERT INTO employee (first_name, last_name, emp_role_id, manager_id) VALUES
-('Mark', 'Justine', 1, null),
+('Mark', 'Justine', 1, 1),
 ('Savannah', 'Klemm', 6, 1),
-('Hannah', 'Culver', 2, null);
+('Hannah', 'Culver', 2, 2);
