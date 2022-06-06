@@ -12,11 +12,18 @@ var connection = mysql.createConnection({
   database: "management_db"
 });
 
-// connection.connect(function(err) {
-  // if (err) throw err;
-  // console.log("connected as id " + connection.threadId + "\n");
-  // exports.start();
-// });
+ connection.connect(function(err) {
+  if (err) throw err;
+  console.log("connected as id " + connection.threadId + "\n");
+});
+
+getAllEmployees = (cb) => {
+  connection.query("SELECT * FROM employees", function(err,results) {
+    if(err) throw err;
+    cb(results);
+ });
+};
+
 
 
     inq.prompt([
@@ -37,7 +44,7 @@ var connection = mysql.createConnection({
         getAllEmployees();
       }
       else if(answer.choice === "Add Employee") {
-        add.addEmployee();
+        addEmployee();
       }      
       else if(answer.choice === "Update Employee Info") {
         update.updateRole();
@@ -65,7 +72,57 @@ updateRole = () => {
 
           employees.push(fullName)
       };
+      addEmployee = () => {
+        view.getAllRoles(function(rolesResults) {
+           var roles = [];
+           for(var i = 0; i < rolesResults.length; i++) {
+               roles.push(rolesResults[i].title);
+           }
+            var options = [
+             {
+                 type: "input",
+                 message: "Employee's First Name",
+                 name: "firstName",
+                 default: "Jane"
+             },
+             {
+                 type: "input",
+                 message: "Employee's Last Name",
+                 name: "lastName",
+                 default: "Doe"
+             },
+             {
+                 type: "list",
+                 message: "Employee's Role",
+                 name: "role",
+                 choices: roles
+             }
+             ];
+     
+             inq.prompt(options)
+             .then((answers) => {
+                 var roleId = null;
+                 for(var i= 0; i < rolesResults.length; i++) {
+                     if(rolesResults[i].title === answers.role) {
+                         roleId = rolesResults[i].role_id
+                     }
+                 }
+                 connection.query("INSERT INTO employees SET ?",
+                     {
+                         first_name: answers.firstName,
+                         last_name: answers.lastName,
+                         emp_role_id: roleId
+                     },
+                 function(err,results) {
+                     if(err) throw err;
+                     console.log("Successfully added " + answers.firstName + " " + answers.lastName );
+                     app.start();
+                 });
+             });
+         });
+     };   
 
+     
       inq.prompt([
           {
               type: "list",
@@ -110,59 +167,5 @@ updateRole = () => {
   });
 };
 
-getAllEmployees = (cb) => {
-  connection.query("SELECT * FROM employees", function(err,results) {
-    if(err) throw err;
-    cb(results);
- });
-}
 
-addEmployee = () => {
-   view.getAllRoles(function(rolesResults) {
-      var roles = [];
-      for(var i = 0; i < rolesResults.length; i++) {
-          roles.push(rolesResults[i].title);
-      }
-       var options = [
-        {
-            type: "input",
-            message: "Employee's First Name",
-            name: "firstName",
-            default: "Jane"
-        },
-        {
-            type: "input",
-            message: "Employee's Last Name",
-            name: "lastName",
-            default: "Doe"
-        },
-        {
-            type: "list",
-            message: "Employee's Role",
-            name: "role",
-            choices: roles
-        }
-        ];
-
-        inq.prompt(options)
-        .then((answers) => {
-            var roleId = null;
-            for(var i= 0; i < rolesResults.length; i++) {
-                if(rolesResults[i].title === answers.role) {
-                    roleId = rolesResults[i].role_id
-                }
-            }
-            connection.query("INSERT INTO employees SET ?",
-                {
-                    first_name: answers.firstName,
-                    last_name: answers.lastName,
-                    emp_role_id: roleId
-                },
-            function(err,results) {
-                if(err) throw err;
-                console.log("Successfully added " + answers.firstName + " " + answers.lastName );
-                app.start();
-            });
-        });
-    });
-};     });
+  });
